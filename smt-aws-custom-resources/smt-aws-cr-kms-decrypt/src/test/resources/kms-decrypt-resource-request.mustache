@@ -1,0 +1,17 @@
+{
+"RequestType" : "{{RequestType}}",
+"ResponseURL" : "{{ResponseURL}}",
+"StackId" : "{{StackId}}",
+"RequestId" : "{{RequestId}}",
+"ResourceType" : "{{ResourceType}}",
+"LogicalResourceId" : "{{LogicalResourceId}}",
+"PhysicalResourceId" : "{{PhysicalResourceId}}",
+"ResourceProperties" : {
+"KmsKeyId" : "{{KmsKeyId}}",
+"Parameters": {
+{{#Parameters}}
+    "{{name}}" : "{{&value}}"{{^last}},{{/last}}
+{{/Parameters}}
+}
+}
+}

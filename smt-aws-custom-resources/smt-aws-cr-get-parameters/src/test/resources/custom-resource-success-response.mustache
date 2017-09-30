@@ -1,0 +1,12 @@
+{
+"Status": "{{Status}}",
+"RequestId": "{{RequestId}}",
+"StackId": "{{StackId}}",
+"LogicalResourceId": "{{LogicalResourceId}}",
+"PhysicalResourceId": "{{PhysicalResourceId}}",
+"Data" : {
+{{#Data}}
+    "{{name}}" : "{{value}}"{{^last}},{{/last}}
+{{/Data}}
+}
+}

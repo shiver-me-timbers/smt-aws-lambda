@@ -1,0 +1,19 @@
+{
+"RequestType" : "{{RequestType}}",
+"ResponseURL" : "{{ResponseURL}}",
+"StackId" : "{{StackId}}",
+"RequestId" : "{{RequestId}}",
+"ResourceType" : "{{ResourceType}}",
+"LogicalResourceId" : "{{LogicalResourceId}}",
+"PhysicalResourceId" : "{{PhysicalResourceId}}",
+"ResourceProperties" : {
+{{#ResourceProperties}}
+    "{{name}}" : "{{value}}"{{^last}},{{/last}}
+{{/ResourceProperties}}
+},
+"OldResourceProperties" : {
+{{#OldResourceProperties}}
+    "{{name}}" : "{{value}}"{{^last}},{{/last}}
+{{/OldResourceProperties}}
+}
+}
