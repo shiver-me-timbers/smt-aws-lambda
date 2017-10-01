@@ -13,11 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-smt-aws-lambda-parent
-=====================
+smt-aws-cfn-cr-get-parameters
+=============================
 
 [![Build Status](https://travis-ci.org/shiver-me-timbers/smt-aws-lambda-parent.svg)](https://travis-ci.org/shiver-me-timbers/smt-aws-lambda-parent)
 [![Coverage Status](https://coveralls.io/repos/shiver-me-timbers/smt-aws-lambda-parent/badge.svg?branch=master&service=github)](https://coveralls.io/github/shiver-me-timbers/smt-aws-lambda-parent?branch=master)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.shiver-me-timbers/smt-aws-lambda-parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.shiver-me-timbers/smt-aws-lambda-parent/)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.shiver-me-timbers/smt-aws-cfn-cr-get-parameters/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.shiver-me-timbers/smt-aws-cfn-cr-get-parameters/)
 
 This project contains some useful AWs Lambdas.
