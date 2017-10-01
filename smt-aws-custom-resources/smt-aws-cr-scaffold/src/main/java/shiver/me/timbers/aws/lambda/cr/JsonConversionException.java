@@ -14,16 +14,13 @@
  *    limitations under the License.
  */
 
-package shiver.me.timbers.aws.lambda.cr.parameters;
+package shiver.me.timbers.aws.lambda.cr;
 
-import java.io.IOException;
-import java.util.Map;
-
-import static shiver.me.timbers.aws.lambda.cr.test.Maps.createMap;
-
-public class Maps {
-
-    public static Map<String, Object> createGetParametersResourceRequest(Map<String, Object> values) throws IOException {
-        return createMap("get-parameters-resource-request.mustache", values);
+/**
+ * @author Karl Bennett
+ */
+class JsonConversionException extends IllegalStateException {
+    JsonConversionException(Throwable throwable) {
+        super(throwable);
     }
 }

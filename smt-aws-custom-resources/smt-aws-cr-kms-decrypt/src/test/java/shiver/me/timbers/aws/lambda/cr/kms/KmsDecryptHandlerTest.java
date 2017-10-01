@@ -20,17 +20,12 @@ import org.junit.Before;
 import org.junit.Test;
 import shiver.me.timbers.aws.lambda.cr.CustomResourceRequest;
 
-import java.nio.ByteBuffer;
-import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static shiver.me.timbers.data.random.RandomStrings.someString;
 
 public class KmsDecryptHandlerTest {
 

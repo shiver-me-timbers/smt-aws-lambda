@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package shiver.me.timbers.aws.lambda.cr.parameters;
+package shiver.me.timbers.aws.lambda.cr.ssm;
 
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.model.GetParametersRequest;
@@ -39,7 +39,7 @@ class ParametersService {
     }
 
     Parameters getParameters(GetParametersResourceRequest request) {
-        log.info(format("Requesting the SSM parameters with request: %s", request));
+        log.info("Requesting the SSM parameters.");
         final GetParametersResult result = simpleSystemsManagement
             .getParameters(new GetParametersRequest().withNames(request.getParameterNames()));
         final List<String> invalidParameters = result.getInvalidParameters();

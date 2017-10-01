@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package shiver.me.timbers.aws.lambda.cr.parameters;
+package shiver.me.timbers.aws.lambda.cr.ssm;
 
 import com.amazonaws.services.simplesystemsmanagement.model.Parameter;
 import org.junit.Before;

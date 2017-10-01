@@ -19,8 +19,6 @@ package shiver.me.timbers.aws.lambda.cr.kms;
 import com.amazonaws.services.kms.AWSKMS;
 import com.amazonaws.services.kms.model.DecryptRequest;
 import com.amazonaws.services.kms.model.DecryptResult;
-import com.amazonaws.services.kms.model.EncryptRequest;
-import com.amazonaws.services.kms.model.EncryptResult;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;

@@ -14,13 +14,16 @@
  *    limitations under the License.
  */
 
-package shiver.me.timbers.aws.lambda.cr.parameters;
+package shiver.me.timbers.aws.lambda.cr.ssm;
 
-import com.amazonaws.services.simplesystemsmanagement.model.Parameter;
+import java.io.IOException;
+import java.util.Map;
 
-public class TestParameters {
+import static shiver.me.timbers.aws.lambda.cr.test.Maps.createMap;
 
-    public static Parameter parameter(String name, String value) {
-        return new Parameter().withName(name).withValue(value);
+public class Maps {
+
+    public static Map<String, Object> createGetParametersResourceRequest(Map<String, Object> values) throws IOException {
+        return createMap("get-parameters-resource-request.mustache", values);
     }
 }

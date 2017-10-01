@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package shiver.me.timbers.aws.lambda.cr.parameters;
+package shiver.me.timbers.aws.lambda.cr.ssm;
 
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
-import static shiver.me.timbers.aws.lambda.cr.parameters.TestParameters.parameter;
+import static shiver.me.timbers.aws.lambda.cr.ssm.TestParameters.parameter;
 import static shiver.me.timbers.data.random.RandomStrings.someAlphanumericString;
 import static shiver.me.timbers.data.random.RandomStrings.someString;
 

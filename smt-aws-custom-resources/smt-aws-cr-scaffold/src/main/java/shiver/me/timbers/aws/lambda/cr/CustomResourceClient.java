@@ -17,6 +17,7 @@
 package shiver.me.timbers.aws.lambda.cr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,6 +30,8 @@ import static java.lang.String.format;
  */
 class CustomResourceClient {
 
+    private Logger log = Logger.getLogger(getClass());
+
     private final HttpURLConnectionFactory factory;
     private final ObjectMapper mapper;
 
@@ -39,6 +42,7 @@ class CustomResourceClient {
 
     void upload(String responseURL, CustomResourceResponse response) {
         try {
+            log.debug(format("Response: %s", mapper.writeValueAsString(response)));
             final HttpURLConnection connection = factory.createConnection(responseURL);
             connection.setDoOutput(true);
             connection.setRequestMethod("PUT");

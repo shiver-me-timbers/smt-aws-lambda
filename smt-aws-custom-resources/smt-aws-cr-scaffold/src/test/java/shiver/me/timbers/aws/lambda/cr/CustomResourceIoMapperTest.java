@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.String.format;
 import static java.util.Collections.singletonMap;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -119,6 +120,42 @@ public class CustomResourceIoMapperTest {
         values.put("StackId", stackId);
         values.put("LogicalResourceId", logicalResourceId);
         values.put("PhysicalResourceId", physicalResourceId);
+        values.put("Data", properties(property(name1, value1), property(name2, value2)));
+
+        // When
+        final CustomResourceResponse actual = mapper.mapSuccessResponse(request, data);
+
+        // Then
+        assertThat(toMap(actual), equalTo(createCustomResourceSuccessResponse(values)));
+    }
+
+    @Test
+    public void Can_map_a_custom_resource_success_response_with_no_physical_resource_id() throws IOException {
+
+        final CustomResourceRequest request = mock(CustomResourceRequest.class);
+
+        final HashMap<String, Object> values = new HashMap<>();
+        final String requestId = someAlphanumericString(13);
+        final String stackId = someAlphanumericString(21);
+        final String logicalResourceId = someAlphanumericString(13);
+        final String name1 = someAlphanumericString(3);
+        final String name2 = someAlphanumericString(5);
+        final String value1 = someAlphanumericString(5);
+        final String value2 = someAlphanumericString(3);
+        final HashMap<String, Object> data = new HashMap<>();
+
+        // Given
+        data.put(name1, value1);
+        data.put(name2, value2);
+        given(request.getRequestId()).willReturn(requestId);
+        given(request.getStackId()).willReturn(stackId);
+        given(request.getLogicalResourceId()).willReturn(logicalResourceId);
+        given(request.getPhysicalResourceId()).willReturn(null);
+        values.put("Status", SUCCESS);
+        values.put("RequestId", requestId);
+        values.put("StackId", stackId);
+        values.put("LogicalResourceId", logicalResourceId);
+        values.put("PhysicalResourceId", format("%s:%s", stackId, logicalResourceId));
         values.put("Data", properties(property(name1, value1), property(name2, value2)));
 
         // When

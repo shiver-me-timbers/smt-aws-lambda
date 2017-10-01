@@ -46,7 +46,7 @@ public class CustomResourceLambdaTest {
         mapper = mock(CustomResourceIoMapper.class);
         handler = mock(CustomResourceMappingHandler.class);
         customResourceClient = mock(CustomResourceClient.class);
-        lambda = new CustomResourceLambda(mapper, handler, customResourceClient);
+        lambda = new CustomResourceLambda(mock(Jsons.class), mapper, handler, customResourceClient);
     }
 
     @Test

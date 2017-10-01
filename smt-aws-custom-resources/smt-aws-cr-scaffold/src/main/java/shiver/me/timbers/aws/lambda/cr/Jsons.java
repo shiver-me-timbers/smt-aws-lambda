@@ -14,22 +14,27 @@
  *    limitations under the License.
  */
 
-package shiver.me.timbers.aws.lambda.cr.parameters;
+package shiver.me.timbers.aws.lambda.cr;
 
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
-import shiver.me.timbers.aws.lambda.cr.CustomResourceLambda;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Karl Bennett
  */
-public class GetParameters extends CustomResourceLambda {
+class Jsons {
 
-    public GetParameters() {
-        this(AWSSimpleSystemsManagementClientBuilder.defaultClient());
+    private final ObjectMapper mapper;
+
+    Jsons(ObjectMapper mapper) {
+        this.mapper = mapper;
     }
 
-    GetParameters(AWSSimpleSystemsManagement awsSimpleSystemsManagement) {
-        super(new GetParametersHandler(new ParametersService(awsSimpleSystemsManagement)));
+    String toJson(Object object) {
+        try {
+            return mapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new JsonConversionException(e);
+        }
     }
 }

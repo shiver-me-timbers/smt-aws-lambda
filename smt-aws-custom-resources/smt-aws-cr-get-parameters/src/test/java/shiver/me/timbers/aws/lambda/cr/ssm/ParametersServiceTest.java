@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package shiver.me.timbers.aws.lambda.cr.parameters;
+package shiver.me.timbers.aws.lambda.cr.ssm;
 
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.model.GetParametersRequest;
@@ -36,7 +36,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static shiver.me.timbers.aws.lambda.cr.parameters.TestParameters.parameter;
+import static shiver.me.timbers.aws.lambda.cr.ssm.TestParameters.parameter;
 import static shiver.me.timbers.data.random.RandomStrings.someString;
 
 public class ParametersServiceTest {

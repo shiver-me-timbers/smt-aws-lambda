@@ -32,27 +32,35 @@ public class CustomResourceLambda implements RequestHandler<Map<String, Object>,
 
     private Logger log = Logger.getLogger(getClass());
 
+    private final Jsons jsons;
     private final CustomResourceIoMapper mapper;
     private final CustomResourceMappingHandler handler;
     private final CustomResourceClient client;
 
     public CustomResourceLambda(CustomResourceHandler handler) {
-        this(new CustomResourceIoMapper(), handler);
+        this(new ObjectMapper(), new CustomResourceIoMapper(), handler);
     }
 
-    private CustomResourceLambda(CustomResourceIoMapper mapper, CustomResourceHandler handler) {
+    private CustomResourceLambda(
+        ObjectMapper objectMapper,
+        CustomResourceIoMapper mapper,
+        CustomResourceHandler handler
+    ) {
         this(
+            new Jsons(objectMapper),
             mapper,
             new CustomResourceMappingHandler(mapper, handler),
-            new CustomResourceClient(new HttpURLConnectionFactory(), new ObjectMapper())
+            new CustomResourceClient(new HttpURLConnectionFactory(), objectMapper)
         );
     }
 
     CustomResourceLambda(
+        Jsons jsons,
         CustomResourceIoMapper mapper,
         CustomResourceMappingHandler handler,
         CustomResourceClient client
     ) {
+        this.jsons = jsons;
         this.mapper = mapper;
         this.handler = handler;
         this.client = client;
@@ -60,7 +68,8 @@ public class CustomResourceLambda implements RequestHandler<Map<String, Object>,
 
     @Override
     public String handleRequest(Map<String, Object> requestMap, Context context) {
-        log.info(format("START: The custom resource has been started with request: %s", requestMap));
+        log.info("START: The custom resource has been started.");
+        log.debug(format("Request: %s", jsons.toJson(requestMap)));
         final CustomResourceRequest request = mapper.mapRequest(requestMap);
 
         final CustomResourceResponse response = handle(request);

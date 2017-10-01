@@ -14,24 +14,22 @@
  *    limitations under the License.
  */
 
-package shiver.me.timbers.aws.lambda.cr.parameters;
+package shiver.me.timbers.aws.lambda.cr.ssm;
 
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
+import shiver.me.timbers.aws.lambda.cr.CustomResourceLambda;
 
-import static org.mockito.Mockito.mock;
+/**
+ * @author Karl Bennett
+ */
+public class GetParameters extends CustomResourceLambda {
 
-@Configuration
-public class GetParametersConfiguration {
-
-    @Bean
-    public AWSSimpleSystemsManagement simpleSystemsManagement() {
-        return mock(AWSSimpleSystemsManagement.class);
+    public GetParameters() {
+        this(AWSSimpleSystemsManagementClientBuilder.defaultClient());
     }
 
-    @Bean
-    public GetParameters getParameters(AWSSimpleSystemsManagement simpleSystemsManagement) {
-        return new GetParameters(simpleSystemsManagement);
+    GetParameters(AWSSimpleSystemsManagement awsSimpleSystemsManagement) {
+        super(new GetParametersHandler(new ParametersService(awsSimpleSystemsManagement)));
     }
 }

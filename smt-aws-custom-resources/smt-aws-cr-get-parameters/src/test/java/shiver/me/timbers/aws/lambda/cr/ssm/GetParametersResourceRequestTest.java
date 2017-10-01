@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package shiver.me.timbers.aws.lambda.cr.parameters;
+package shiver.me.timbers.aws.lambda.cr.ssm;
 
 import org.junit.Test;
 import shiver.me.timbers.aws.lambda.cr.CustomResourceRequest;

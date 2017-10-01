@@ -14,20 +14,13 @@
  *    limitations under the License.
  */
 
-package shiver.me.timbers.aws.lambda.cr.parameters;
+package shiver.me.timbers.aws.lambda.cr.ssm;
 
-import shiver.me.timbers.aws.lambda.cr.CustomResourceException;
+import com.amazonaws.services.simplesystemsmanagement.model.Parameter;
 
-import java.util.List;
+public class TestParameters {
 
-import static java.lang.String.format;
-
-/**
- * @author Karl Bennett
- */
-class InvalidParametersException extends CustomResourceException {
-
-    InvalidParametersException(List<String> invalidParameters) {
-        super(format("Invalid parameters: %s", invalidParameters));
+    public static Parameter parameter(String name, String value) {
+        return new Parameter().withName(name).withValue(value);
     }
 }

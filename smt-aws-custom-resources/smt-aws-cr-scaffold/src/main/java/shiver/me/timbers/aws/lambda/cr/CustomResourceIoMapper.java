@@ -18,6 +18,8 @@ package shiver.me.timbers.aws.lambda.cr;
 
 import java.util.Map;
 
+import static java.lang.String.format;
+
 /**
  * @author Karl Bennett
  */
@@ -61,9 +63,15 @@ class CustomResourceIoMapper {
             request.getRequestId(),
             request.getStackId(),
             request.getLogicalResourceId(),
-            request.getPhysicalResourceId(),
+            createPhysicalResourceId(request),
             data,
             reason
         );
+    }
+
+    private String createPhysicalResourceId(CustomResourceRequest request) {
+        final String physicalResourceId = request.getPhysicalResourceId();
+        return physicalResourceId == null ?
+            format("%s:%s", request.getStackId(), request.getLogicalResourceId()) : physicalResourceId;
     }
 }

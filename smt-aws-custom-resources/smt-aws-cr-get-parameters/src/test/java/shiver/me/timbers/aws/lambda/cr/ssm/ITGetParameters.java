@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package shiver.me.timbers.aws.lambda.cr.parameters;
+package shiver.me.timbers.aws.lambda.cr.ssm;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
@@ -47,8 +47,8 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static shiver.me.timbers.aws.lambda.cr.parameters.Maps.createGetParametersResourceRequest;
-import static shiver.me.timbers.aws.lambda.cr.parameters.TestParameters.parameter;
+import static shiver.me.timbers.aws.lambda.cr.ssm.Maps.createGetParametersResourceRequest;
+import static shiver.me.timbers.aws.lambda.cr.ssm.TestParameters.parameter;
 import static shiver.me.timbers.aws.lambda.cr.test.Maps.createCustomResourceFailedResponse;
 import static shiver.me.timbers.aws.lambda.cr.test.Maps.createCustomResourceSuccessResponse;
 import static shiver.me.timbers.aws.lambda.cr.test.Properties.properties;
