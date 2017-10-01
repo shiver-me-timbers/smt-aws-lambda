@@ -21,11 +21,11 @@
 
     <parent>
         <groupId>com.github.shiver-me-timbers</groupId>
-        <artifactId>smt-aws-lambda</artifactId>
+        <artifactId>smt-aws-lambda-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>smt-aws-custom-resources</artifactId>
+    <artifactId>smt-aws-cfn-custom-resource-parent</artifactId>
 
     <packaging>pom</packaging>
 
@@ -60,10 +60,10 @@
     </profiles>
 
     <modules>
-        <module>smt-aws-cr-test</module>
-        <module>smt-aws-cr-scaffold</module>
-        <module>smt-aws-cr-get-parameters</module>
-        <module>smt-aws-cr-kms-encrypt</module>
-        <module>smt-aws-cr-kms-decrypt</module>
+        <module>smt-aws-cfn-cr-test</module>
+        <module>smt-aws-cfn-cr-scaffold</module>
+        <module>smt-aws-cfn-cr-get-parameters</module>
+        <module>smt-aws-cfn-cr-kms-encrypt</module>
+        <module>smt-aws-cfn-cr-kms-decrypt</module>
     </modules>
 </project>

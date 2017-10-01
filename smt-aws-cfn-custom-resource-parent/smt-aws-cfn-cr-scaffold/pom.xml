@@ -21,11 +21,11 @@
 
     <parent>
         <groupId>com.github.shiver-me-timbers</groupId>
-        <artifactId>smt-aws-custom-resources</artifactId>
+        <artifactId>smt-aws-cfn-custom-resource-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>smt-aws-cr-scaffold</artifactId>
+    <artifactId>smt-aws-cfn-cr-scaffold</artifactId>
 
     <packaging>jar</packaging>
 
@@ -88,7 +88,7 @@
 
         <dependency>
             <groupId>com.github.shiver-me-timbers</groupId>
-            <artifactId>smt-aws-cr-test</artifactId>
+            <artifactId>smt-aws-cfn-cr-test</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
