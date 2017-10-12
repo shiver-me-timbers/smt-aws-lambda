@@ -1,0 +1,110 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "SOAP stub test stack.",
+  "Parameters": {
+    "StubName": {
+      "Type": "String",
+      "Default": "SoapStub",
+      "Description": "This is the name of the SOAP stub lambda."
+    },
+    "StubbingName": {
+      "Type": "String",
+      "Default": "SoapStubbing",
+      "Description": "This is the name of the SOAP stubbing lambda."
+    },
+    "BucketName": {
+      "Type": "String",
+      "Default": "core-pipeline-s3bucket",
+      "Description": "This is the name of the S3 bucket that will hold the stubs."
+    },
+    "DirectoryName": {
+      "Type": "String",
+      "Default": "SoapStubs",
+      "Description": "This is the name of the directory in S3 that the stubs will be put."
+    }
+  },
+  "Resources": {
+    "StubLambda": {
+      "Type": "AWS::Lambda::Function",
+      "DependsOn": ["LambdaRole"],
+      "Properties": {
+        "FunctionName": { "Ref": "StubName" },
+        "Handler": "nz.co.vector.aws.lambda.soap.stub.LambdaSoapStub",
+        "Role": { "Fn::GetAtt": ["LambdaRole", "Arn"] },
+        "Code": { "S3Bucket": { "Ref": "BucketName" }, "S3Key": "lambda-soap-stub-1.0-SNAPSHOT.jar" },
+        "Runtime": "java8",
+        "Timeout": "300",
+        "MemorySize": 256,
+        "Environment": {
+          "Variables": {
+            "S3_BUCKET_NAME": { "Ref": "BucketName" },
+            "S3_DIRECTORY_NAME": { "Ref": "DirectoryName" }
+          }
+        }
+      }
+    },
+    "StubbingLambda": {
+      "Type": "AWS::Lambda::Function",
+      "DependsOn": ["LambdaRole"],
+      "Properties": {
+        "FunctionName": { "Ref": "StubbingName" },
+        "Handler": "nz.co.vector.aws.lambda.soap.stub.LambdaSoapStubbing",
+        "Role": { "Fn::GetAtt": ["LambdaRole", "Arn"] },
+        "Code": { "S3Bucket": { "Ref": "BucketName" }, "S3Key": "lambda-soap-stub-1.0-SNAPSHOT.jar" },
+        "Runtime": "java8",
+        "Timeout": "300",
+        "MemorySize": 256,
+        "Environment": {
+          "Variables": {
+            "S3_BUCKET_NAME": { "Ref": "BucketName" },
+            "S3_DIRECTORY_NAME": { "Ref": "DirectoryName" }
+          }
+        }
+      }
+    },
+    "LambdaRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": { "Fn::Sub": "${StubName}-role" },
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/"
+      }
+    },
+    "LambdaPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "DependsOn": ["LambdaRole"],
+      "Properties": {
+        "PolicyName": { "Fn::Sub": "${StubName}-policy" },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "s3:*"
+              ],
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles": [{ "Ref": "LambdaRole" }]
+      }
+    }
+  }
+}

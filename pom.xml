@@ -22,7 +22,7 @@
         <groupId>com.github.shiver-me-timbers</groupId>
         <artifactId>smt-parent-spring-boot</artifactId>
         <version>1.5.7.0</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
     <artifactId>smt-aws-lambda-parent</artifactId>
@@ -74,18 +74,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-lambda-java-core</artifactId>
-            <version>1.1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-lambda-java-log4j</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -130,12 +118,13 @@
 
     <modules>
         <module>smt-aws-cfn-custom-resource-parent</module>
+        <module>smt-aws-lambda-soap-stub-parent</module>
     </modules>
 
     <scm>
         <connection>scm:git:https://github.com/shiver-me-timbers/${project.artifactId}.git</connection>
         <developerConnection>scm:git:git@github.com:shiver-me-timbers/${project.artifactId}.git</developerConnection>
         <url>https://github.com/shiver-me-timbers/${project.artifactId}</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 </project>
