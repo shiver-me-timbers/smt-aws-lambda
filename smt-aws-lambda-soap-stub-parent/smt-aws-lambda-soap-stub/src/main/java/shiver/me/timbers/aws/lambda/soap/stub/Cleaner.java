@@ -36,11 +36,11 @@ class Cleaner {
         this.transformerFactory = transformerFactory;
     }
 
-    String cleanEmptySOAPHeader(String soapRequestXml) {
+    String cleanSOAPHeader(String soapRequestXml) {
         try {
             final SOAPMessage message = messages.createMessage(soapRequestXml);
             final SOAPHeader header = message.getSOAPHeader();
-            if (headerIsEmpty(header)) {
+            if (header != null) {
                 header.detachNode();
             }
             // Make sure to collapse any empty lines.
@@ -63,9 +63,5 @@ class Cleaner {
         } catch (TransformerException e) {
             throw new XmlException("Failed to remove the namespaces", e);
         }
-    }
-
-    private static boolean headerIsEmpty(SOAPHeader header) {
-        return header != null && header.getChildNodes().getLength() == 0;
     }
 }

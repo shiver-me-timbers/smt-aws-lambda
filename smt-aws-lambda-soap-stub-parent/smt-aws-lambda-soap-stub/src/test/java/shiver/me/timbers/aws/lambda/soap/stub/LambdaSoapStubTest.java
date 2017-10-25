@@ -24,6 +24,7 @@ import org.junit.Test;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static shiver.me.timbers.data.random.RandomStrings.someString;
 
@@ -58,6 +59,7 @@ public class LambdaSoapStubTest {
         final SoapWrapper actual = soapStub.handleRequest(request, mock(Context.class));
 
         // Then
+        then(repository).should().recordCall(hash, body);
         assertThat(actual, equalTo(new SoapWrapper(response)));
     }
 }

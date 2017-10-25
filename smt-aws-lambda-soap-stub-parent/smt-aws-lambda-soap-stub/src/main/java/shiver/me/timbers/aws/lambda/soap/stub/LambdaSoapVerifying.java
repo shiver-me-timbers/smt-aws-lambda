@@ -16,26 +16,19 @@
 
 package shiver.me.timbers.aws.lambda.soap.stub;
 
-import org.apache.log4j.Logger;
+import javax.xml.transform.TransformerConfigurationException;
+import java.io.IOException;
 
-import static com.amazonaws.util.BinaryUtils.toHex;
-import static java.lang.String.format;
+import static shiver.me.timbers.aws.lambda.soap.stub.LambdaSoapStub.digester;
+import static shiver.me.timbers.aws.lambda.soap.stub.LambdaSoapStub.repository;
 
-class Digester {
+public class LambdaSoapVerifying extends AbstractLambdaSoapVerifying {
 
-    private final Logger log = Logger.getLogger(getClass());
-
-    private final Cleaner cleaner;
-    private final MessageDigestFactory factory;
-
-    Digester(Cleaner cleaner, MessageDigestFactory factory) {
-        this.cleaner = cleaner;
-        this.factory = factory;
+    public LambdaSoapVerifying() throws TransformerConfigurationException, IOException {
+        this(digester(), repository());
     }
 
-    String digestSoapRequest(String soapRequestXml) {
-        final String xml = cleaner.cleanNamespaces(cleaner.cleanSOAPHeader(soapRequestXml));
-        log.info(format("Digesting XML:\n%s", xml));
-        return toHex(factory.create("MD5").digest(xml.getBytes()));
+    LambdaSoapVerifying(Digester digester, StubbingRepository repository) {
+        super(digester, repository);
     }
 }

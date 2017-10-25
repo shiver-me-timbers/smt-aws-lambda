@@ -47,8 +47,6 @@ import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static shiver.me.timbers.data.random.RandomIntegers.someIntegerGreaterThan;
 import static shiver.me.timbers.data.random.RandomStrings.someString;
 
 public class CleanerTest {
@@ -65,7 +63,7 @@ public class CleanerTest {
     }
 
     @Test
-    public void Can_clean_out_an_empty_SOAP_header() throws SOAPException {
+    public void Can_clean_out_a_SOAP_header() throws SOAPException {
 
         final String soapRequestXml = someString();
 
@@ -80,12 +78,10 @@ public class CleanerTest {
         // Given
         given(messages.createMessage(soapRequestXml)).willReturn(message);
         given(message.getSOAPHeader()).willReturn(header);
-        given(header.getChildNodes()).willReturn(nodes);
-        given(nodes.getLength()).willReturn(0);
         given(messages.toXmlString(message)).willReturn(format("%s\n   \n%s", start, end));
 
         // When
-        final String actual = cleaner.cleanEmptySOAPHeader(soapRequestXml);
+        final String actual = cleaner.cleanSOAPHeader(soapRequestXml);
 
         // Then
         final InOrder order = inOrder(header, messages);
@@ -111,37 +107,10 @@ public class CleanerTest {
         given(messages.toXmlString(message)).willReturn(format("%s\n   \n%s", start, end));
 
         // When
-        final String actual = cleaner.cleanEmptySOAPHeader(soapRequestXml);
+        final String actual = cleaner.cleanSOAPHeader(soapRequestXml);
 
         // Then
         then(messages).should().toXmlString(message);
-        assertThat(actual, is(expected));
-    }
-
-    @Test
-    public void Will_leave_a_populated_SOAP_header() throws SOAPException {
-
-        final String soapRequestXml = someString();
-
-        final SOAPMessage message = mock(SOAPMessage.class);
-        final SOAPHeader header = mock(SOAPHeader.class);
-        final NodeList nodes = mock(NodeList.class);
-
-        final String expected = someString();
-
-        // Given
-        given(messages.createMessage(soapRequestXml)).willReturn(message);
-        given(message.getSOAPHeader()).willReturn(header);
-        given(header.getChildNodes()).willReturn(nodes);
-        given(nodes.getLength()).willReturn(someIntegerGreaterThan(1));
-        given(messages.toXmlString(message)).willReturn(expected);
-
-        // When
-        final String actual = cleaner.cleanEmptySOAPHeader(soapRequestXml);
-
-        // Then
-        then(header).should().getChildNodes();
-        verifyNoMoreInteractions(header);
         assertThat(actual, is(expected));
     }
 
@@ -159,7 +128,7 @@ public class CleanerTest {
         given(message.getSOAPHeader()).willThrow(exception);
 
         // When
-        final Throwable actual = catchThrowable(() -> cleaner.cleanEmptySOAPHeader(soapRequestXml));
+        final Throwable actual = catchThrowable(() -> cleaner.cleanSOAPHeader(soapRequestXml));
 
         // Then
         assertThat(actual, instanceOf(SoapException.class));

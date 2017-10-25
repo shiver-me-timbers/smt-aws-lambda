@@ -54,7 +54,7 @@ public class DigesterTest {
         final byte[] expected = someString().getBytes();
 
         // Given
-        given(cleaner.cleanEmptySOAPHeader(soapRequestXml)).willReturn(headerCleaned);
+        given(cleaner.cleanSOAPHeader(soapRequestXml)).willReturn(headerCleaned);
         given(cleaner.cleanNamespaces(headerCleaned)).willReturn(xml);
         given(factory.create("MD5")).willReturn(digest);
         given(digest.digest(xml.getBytes())).willReturn(expected);

@@ -39,30 +39,16 @@ public class ITCleaner {
     }
 
     @Test
-    public void Can_clean_out_an_empty_SOAP_header() throws IOException {
+    public void Can_clean_out_a_SOAP_header() throws IOException {
 
         // Given
         final String soapRequestXml = IOUtils
-            .toString(ClassLoader.getSystemResource("soup-with-empty-header.xml"), Charset.forName("UTF-8"));
+            .toString(ClassLoader.getSystemResource("soup-with-header.xml"), Charset.forName("UTF-8"));
         final String expected = IOUtils
             .toString(ClassLoader.getSystemResource("soup-without-header.xml"), Charset.forName("UTF-8"));
 
         // When
-        final String actual = cleaner.cleanEmptySOAPHeader(soapRequestXml);
-
-        // Then
-        assertThat(actual, equalTo(expected));
-    }
-
-    @Test
-    public void Will_leave_a_populated_SOAP_header() throws IOException {
-
-        // Given
-        final String expected = IOUtils
-            .toString(ClassLoader.getSystemResource("soup-with-header.xml"), Charset.forName("UTF-8"));
-
-        // When
-        final String actual = cleaner.cleanEmptySOAPHeader(expected);
+        final String actual = cleaner.cleanSOAPHeader(soapRequestXml);
 
         // Then
         assertThat(actual, equalTo(expected));

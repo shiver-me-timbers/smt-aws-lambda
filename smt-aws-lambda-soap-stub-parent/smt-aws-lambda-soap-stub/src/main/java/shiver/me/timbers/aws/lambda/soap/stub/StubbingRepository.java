@@ -17,24 +17,35 @@
 package shiver.me.timbers.aws.lambda.soap.stub;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.apache.log4j.Logger;
 
+import java.time.Clock;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 
 class StubbingRepository {
+
+    static final DateTimeFormatter FORMATTER = DateTimeFormatter
+        .ofPattern("yyyy-MM-dd-HH-mm-ss-SSSS").withZone(ZoneId.systemDefault());
 
     private final Logger log = Logger.getLogger(getClass());
 
     private final String bucketName;
     private final String directory;
     private final AmazonS3 s3;
+    private final Clock clock;
 
-    StubbingRepository(Env env, AmazonS3 s3) {
+    StubbingRepository(Env env, AmazonS3 s3, Clock clock) {
         this.bucketName = env.get("S3_BUCKET_NAME");
         this.directory = env.get("S3_DIRECTORY_NAME");
         this.s3 = s3;
+        this.clock = clock;
     }
 
     void save(String hash, Stubbing stubbing) {
@@ -54,5 +65,18 @@ class StubbingRepository {
         final String key = format("%s/%s-response.xml", directory, hash);
         log.info(format("Getting object from bucket (%s) with key (%s).", bucketName, key));
         return s3.getObjectAsString(bucketName, key);
+    }
+
+    List<String> findCallsByHash(String hash) {
+        return s3.listObjects(bucketName, format("%s/%s-called-", directory, hash)).getObjectSummaries()
+            .stream().map(S3ObjectSummary::getKey).collect(toList());
+    }
+
+    void recordCall(String hash, String body) {
+        s3.putObject(
+            bucketName,
+            format("%s/%s-called-%s.xml", directory, hash, FORMATTER.format(clock.instant())),
+            body
+        );
     }
 }

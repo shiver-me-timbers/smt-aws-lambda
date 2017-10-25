@@ -23,6 +23,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Clock;
 
 public class LambdaSoapStub extends AbstractLambdaSoapStub {
 
@@ -49,7 +50,7 @@ public class LambdaSoapStub extends AbstractLambdaSoapStub {
     }
 
     static StubbingRepository repository() {
-        return new StubbingRepository(new Env(), AmazonS3ClientBuilder.defaultClient());
+        return new StubbingRepository(new Env(), AmazonS3ClientBuilder.defaultClient(), Clock.systemDefaultZone());
     }
 
 }

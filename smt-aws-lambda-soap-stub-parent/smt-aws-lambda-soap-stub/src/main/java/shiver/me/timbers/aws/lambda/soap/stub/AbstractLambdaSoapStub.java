@@ -37,10 +37,13 @@ abstract class AbstractLambdaSoapStub implements RequestHandler<SoapWrapper, Soa
     @Override
     public SoapWrapper handleRequest(SoapWrapper request, Context context) {
         log.info("START: Soap studded response.");
-        log.info(format("REQUEST:\n%s", request.getBody()));
-        final String hash = digester.digestSoapRequest(request.getBody());
+        final String body = request.getBody();
+        log.info(format("REQUEST:\n%s", body));
+        final String hash = digester.digestSoapRequest(body);
         log.info(format("Finding stubbed response for hash (%s).", hash));
         final String response = repository.findResponseByHash(hash);
+        log.info(format("Saving stub call for hash (%s).", hash));
+        repository.recordCall(hash, body);
         log.info(format("END: Returning response with hash (%s).", hash));
         log.info(format("RESPONSE:\n%s", response));
         return new SoapWrapper(response);

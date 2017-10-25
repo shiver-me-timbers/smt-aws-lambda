@@ -16,19 +16,14 @@
 
 package shiver.me.timbers.aws.lambda.soap.stub;
 
-import javax.xml.transform.TransformerConfigurationException;
-import java.io.IOException;
+import org.junit.Test;
 
-import static shiver.me.timbers.aws.lambda.soap.stub.LambdaSoapStub.digester;
-import static shiver.me.timbers.aws.lambda.soap.stub.LambdaSoapStub.repository;
+import static shiver.me.timbers.data.random.RandomStrings.someString;
 
-public class LambdaSoapStubbing extends AbstractLambdaSoapStubbing {
+public class VerifyRequestErrorTest {
 
-    public LambdaSoapStubbing() throws TransformerConfigurationException, IOException {
-        this(digester(), repository());
-    }
-
-    LambdaSoapStubbing(Digester digester, StubbingRepository repository) {
-        super(digester, repository);
+    @Test
+    public void Instantiation_for_coverage() {
+        new VerifyRequestError(someString());
     }
 }

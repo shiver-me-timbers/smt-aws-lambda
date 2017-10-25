@@ -41,6 +41,7 @@
                             <instrumentation>
                                 <excludes>
                                     <exclude>**/*/GivenSoapStub.class</exclude>
+                                    <exclude>**/*/ThenSoapStub.class</exclude>
                                 </excludes>
                             </instrumentation>
                             <check>

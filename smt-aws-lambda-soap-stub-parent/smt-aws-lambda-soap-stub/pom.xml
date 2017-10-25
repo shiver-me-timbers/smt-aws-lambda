@@ -40,8 +40,7 @@
                         <configuration>
                             <instrumentation>
                                 <excludes>
-                                    <exclude>**/*/LambdaSoapStub.class</exclude>
-                                    <exclude>**/*/LambdaSoapStubbing.class</exclude>
+                                    <exclude>**/*/LambdaSoap*.class</exclude>
                                 </excludes>
                             </instrumentation>
                             <check>

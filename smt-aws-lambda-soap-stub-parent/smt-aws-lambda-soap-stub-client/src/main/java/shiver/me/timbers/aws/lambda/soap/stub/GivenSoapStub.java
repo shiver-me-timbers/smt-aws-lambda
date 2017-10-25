@@ -22,13 +22,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class GivenSoapStub {
 
-    private final String stubUrl;
+    private final String stubbingUrl;
     private final Soaps soaps;
     private final Client client;
 
-    public GivenSoapStub(String stubUrl) {
+    public GivenSoapStub(String stubbingUrl) {
         this(
-            stubUrl,
+            stubbingUrl,
             new Soaps(
                 new Marshals(new DocumentFactory(DocumentBuilderFactory.newInstance()), new JaxbContextFactory()),
                 new SoapMessages(new SoapMessageFactory())),
@@ -36,13 +36,13 @@ public class GivenSoapStub {
         );
     }
 
-    GivenSoapStub(String stubUrl, Soaps soaps, Client client) {
-        this.stubUrl = stubUrl;
+    GivenSoapStub(String stubbingUrl, Soaps soaps, Client client) {
+        this.stubbingUrl = stubbingUrl;
         this.soaps = soaps;
         this.client = client;
     }
 
-    public RequestStubbing request(Object method) {
-        return new RequestStubbing(soaps, soaps.marshalToSOAPMessage(method), client.target(stubUrl));
+    public RequestStubbing request(Object request) {
+        return new RequestStubbing(soaps, soaps.marshalToSOAPMessage(request), client.target(stubbingUrl));
     }
 }
