@@ -9,6 +9,7 @@ import org.mockito.ArgumentCaptor;
 import java.io.IOException;
 import java.util.Map;
 
+import static java.net.HttpURLConnection.HTTP_NOT_ACCEPTABLE;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -17,6 +18,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static shiver.me.timbers.data.random.RandomBooleans.someBoolean;
 import static shiver.me.timbers.data.random.RandomIntegers.someInteger;
 import static shiver.me.timbers.data.random.RandomStrings.someString;
@@ -74,6 +76,7 @@ public class JsonProxyRequestHandlerTest {
         given(request.getRequestContext()).willReturn(requestContext);
         given(request.isBase64Encoded()).willReturn(requestIsBase64Encoded);
         given(request.getBody()).willReturn(requestBody);
+        given(requestHeaders.get("Content-Type")).willReturn("application/json");
         given(objectMapper.readValue(requestBody, SomeRequestType.class)).willReturn(deserialisedRequestBody);
         given(deserialisedHandler.handleRequest(captor.capture(), eq(context))).willReturn(response);
         given(response.getStatusCode()).willReturn(statusCode);
@@ -105,16 +108,40 @@ public class JsonProxyRequestHandlerTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    public void Will_only_accept_json_content() throws IOException {
+
+        final ProxyRequest<String> request = mock(ProxyRequest.class);
+        final Context context = mock(Context.class);
+
+        final Map<String, String> requestHeaders = mock(Map.class);
+
+        // Given
+        given(request.getHeaders()).willReturn(requestHeaders);
+        given(requestHeaders.get("Content-Type")).willReturn(someString());
+
+        // When
+        final ProxyResponse actual = handler.handleRequest(request, context);
+
+        // Then
+        verifyZeroInteractions(objectMapper, deserialisedHandler);
+        assertThat(actual.getStatusCode(), is(HTTP_NOT_ACCEPTABLE));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void Can_fail_to_deserialise_a_json_request() throws IOException {
 
         final ProxyRequest<String> request = mock(ProxyRequest.class);
         final Context context = mock(Context.class);
 
+        final Map<String, String> requestHeaders = mock(Map.class);
         final String requestBody = someString();
         final IOException exception = mock(IOException.class);
 
         // Given
+        given(request.getHeaders()).willReturn(requestHeaders);
         given(request.getBody()).willReturn(requestBody);
+        given(requestHeaders.get("Content-Type")).willReturn("application/json");
         given(objectMapper.readValue(requestBody, SomeRequestType.class)).willThrow(exception);
 
         // When

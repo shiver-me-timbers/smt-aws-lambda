@@ -17,6 +17,10 @@ public class ProxyResponse<T> {
     public ProxyResponse() {
     }
 
+    public ProxyResponse(int statusCode) {
+        this.statusCode = statusCode;
+    }
+
     public ProxyResponse(ProxyResponse<?> response, T body) {
         this.statusCode = response.getStatusCode();
         this.headers = response.getHeaders();
