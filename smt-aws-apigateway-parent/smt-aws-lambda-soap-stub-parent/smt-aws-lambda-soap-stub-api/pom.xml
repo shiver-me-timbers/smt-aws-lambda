@@ -14,7 +14,8 @@
   ~    limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -23,7 +24,7 @@
         <version>1.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>smt-aws-lambda-soap-stub</artifactId>
+    <artifactId>smt-aws-lambda-soap-stub-api</artifactId>
 
     <packaging>jar</packaging>
 
@@ -40,7 +41,7 @@
                         <configuration>
                             <instrumentation>
                                 <excludes>
-                                    <exclude>**/*/LambdaSoap*.class</exclude>
+                                    <exclude>**/*/MessageFactories.class</exclude>
                                 </excludes>
                             </instrumentation>
                             <check>
@@ -56,25 +57,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-lambda-java-core</artifactId>
-            <version>1.1.0</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-lambda-java-log4j</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.shiver-me-timbers</groupId>
-            <artifactId>smt-aws-lambda-soap-stub-api</artifactId>
-            <version>1.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.11.210</version>
         </dependency>
 
         <dependency>

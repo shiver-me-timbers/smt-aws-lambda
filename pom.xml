@@ -127,8 +127,8 @@
     </dependencies>
 
     <modules>
+        <module>smt-aws-apigateway-parent</module>
         <module>smt-aws-cfn-custom-resource-parent</module>
-        <module>smt-aws-lambda-soap-stub-parent</module>
     </modules>
 
     <scm>
