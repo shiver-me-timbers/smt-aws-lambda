@@ -1,6 +1,7 @@
 package shiver.me.timbers.aws.apigateway.proxy;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class JsonProxyRequestHandlerTest {
 
     private ObjectMapper objectMapper;
     private DeserialisedProxyRequestHandler<SomeRequestType, SomeResponseType> deserialisedHandler;
-    private JsonProxyRequestHandler<SomeRequestType, SomeResponseType> handler;
+    private RequestHandler<ProxyRequest<String>, ProxyResponse<String>> handler;
 
     @Before
     @SuppressWarnings("unchecked")
