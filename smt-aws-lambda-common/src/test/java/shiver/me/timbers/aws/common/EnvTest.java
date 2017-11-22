@@ -14,11 +14,23 @@
  *    limitations under the License.
  */
 
-package shiver.me.timbers.aws.lambda.soap.stub;
+package shiver.me.timbers.aws.common;
 
-class Env {
+import org.junit.Test;
 
-    String get(String name) {
-        return System.getenv(name);
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
+
+public class EnvTest {
+
+    @Test
+    public void Can_get_an_environment_variable() {
+
+        // When
+        final String actual = new Env().get("HOME");
+
+        // Then
+        assertThat(actual, not(nullValue()));
     }
 }

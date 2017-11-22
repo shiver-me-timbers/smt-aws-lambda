@@ -15,14 +15,15 @@
   ~    limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.github.shiver-me-timbers</groupId>
         <artifactId>smt-parent-spring-boot</artifactId>
         <version>1.5.7.0</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
     <artifactId>smt-aws-lambda-parent</artifactId>
@@ -127,6 +128,9 @@
     </dependencies>
 
     <modules>
+        <module>smt-aws-lambda-common</module>
+        <module>smt-aws-lambda-jackson-json</module>
+        <module>smt-aws-lambda-pingable-parent</module>
         <module>smt-aws-apigateway-parent</module>
         <module>smt-aws-cfn-custom-resource-parent</module>
     </modules>

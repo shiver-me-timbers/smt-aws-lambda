@@ -17,6 +17,7 @@
 package shiver.me.timbers.aws.lambda.soap.stub;
 
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import shiver.me.timbers.aws.common.Env;
 
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamSource;

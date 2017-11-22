@@ -21,6 +21,7 @@ import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.junit.Before;
 import org.junit.Test;
+import shiver.me.timbers.aws.common.Env;
 
 import java.time.Clock;
 import java.time.Instant;

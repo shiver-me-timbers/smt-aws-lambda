@@ -19,6 +19,7 @@ package shiver.me.timbers.aws.lambda.soap.stub;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.apache.log4j.Logger;
+import shiver.me.timbers.aws.common.Env;
 
 import java.time.Clock;
 import java.time.ZoneId;
