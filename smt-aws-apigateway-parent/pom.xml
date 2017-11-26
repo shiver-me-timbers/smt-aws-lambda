@@ -31,6 +31,5 @@
 
     <modules>
         <module>smt-aws-apigateway-proxy-api</module>
-        <module>smt-aws-lambda-soap-stub-parent</module>
     </modules>
 </project>

@@ -131,6 +131,7 @@
         <module>smt-aws-lambda-jackson-json</module>
         <module>smt-aws-lambda-pingable-parent</module>
         <module>smt-aws-apigateway-parent</module>
+        <module>smt-aws-lambda-soap-stub-parent</module>
         <module>smt-aws-cfn-custom-resource-parent</module>
     </modules>
 
