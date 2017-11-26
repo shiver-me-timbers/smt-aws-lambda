@@ -16,38 +16,15 @@
 
 package shiver.me.timbers.aws.lambda.soap.stub;
 
-public class SoapWrapper {
+import shiver.me.timbers.aws.apigateway.proxy.ProxyResponse;
 
-    private String body;
+import static java.util.Collections.singletonMap;
 
-    public SoapWrapper() {
-        this(null);
-    }
+public class StubProxyResponse extends ProxyResponse<String> {
 
-    public SoapWrapper(String body) {
-        this.body = body;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        SoapWrapper that = (SoapWrapper) o;
-
-        return body != null ? body.equals(that.body) : that.body == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return body != null ? body.hashCode() : 0;
+    public StubProxyResponse(String response) {
+        super(200);
+        setHeaders(singletonMap("Content-Type", "text/xml"));
+        setBody(response);
     }
 }

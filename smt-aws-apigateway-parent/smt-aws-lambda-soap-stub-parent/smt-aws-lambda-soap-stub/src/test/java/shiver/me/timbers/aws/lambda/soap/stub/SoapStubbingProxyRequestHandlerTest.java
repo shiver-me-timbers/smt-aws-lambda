@@ -18,8 +18,11 @@ package shiver.me.timbers.aws.lambda.soap.stub;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
+import shiver.me.timbers.aws.apigateway.proxy.ProxyRequest;
+import shiver.me.timbers.aws.apigateway.proxy.ProxyResponse;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.soap.SOAPException;
@@ -27,43 +30,49 @@ import java.io.IOException;
 
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static shiver.me.timbers.data.random.RandomStrings.someString;
 
-public class LambdaSoapStubbingTest {
+public class SoapStubbingProxyRequestHandlerTest {
 
     private Digester digester;
     private StubbingRepository repository;
-    private RequestHandler<Stubbing, String> soapStubbing;
+    private RequestHandler<ProxyRequest<Stubbing>, ProxyResponse<String>> soapStubbing;
 
     @Before
     public void setUp() {
         digester = mock(Digester.class);
         repository = mock(StubbingRepository.class);
-        soapStubbing = new LambdaSoapStubbing(digester, repository);
+        soapStubbing = new SoapStubbingProxyRequestHandler(digester, repository);
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void Can_call_the_lambda() throws SOAPException, IOException, JAXBException {
+    public void Can_stub_a_request() throws SOAPException, IOException, JAXBException {
+
+        final ProxyRequest<Stubbing> request = mock(ProxyRequest.class);
 
         final Stubbing stubbing = mock(Stubbing.class);
-
-        final String request = someString();
+        final String expectedRequest = someString();
         final String hash = someString();
 
         // Given
-        given(stubbing.getRequest()).willReturn(request);
-        given(digester.digestSoapRequest(request)).willReturn(hash);
+        given(request.getBody()).willReturn(stubbing);
+        given(stubbing.getRequest()).willReturn(expectedRequest);
+        given(digester.digestSoapRequest(expectedRequest)).willReturn(hash);
 
         // When
-        final String actual = soapStubbing.handleRequest(stubbing, mock(Context.class));
+        final ProxyResponse<String> actual = soapStubbing.handleRequest(request, mock(Context.class));
 
         // Then
         then(repository).should().save(hash, stubbing);
-        assertThat(actual, equalTo(format("SOAP stub saved with hash (%s).", hash)));
+        assertThat(actual.getStatusCode(), is(200));
+        assertThat(actual.getHeaders(), (Matcher) hasEntry("Content-Type", "application/json"));
+        assertThat(actual.getBody(), equalTo(format("SOAP stub saved with hash (%s).", hash)));
     }
 }

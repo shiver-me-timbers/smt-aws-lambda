@@ -16,17 +16,13 @@
 
 package shiver.me.timbers.aws.lambda.soap.stub;
 
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import shiver.me.timbers.aws.common.Env;
-
 import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.stream.StreamSource;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.time.Clock;
 
-public class LambdaSoapStub extends AbstractLambdaSoapStub {
+import static shiver.me.timbers.aws.lambda.soap.stub.SoapStubSetup.digester;
+import static shiver.me.timbers.aws.lambda.soap.stub.SoapStubSetup.repository;
+
+public class LambdaSoapStub extends SoapStubProxyRequestHandler {
 
     public LambdaSoapStub() throws TransformerConfigurationException, IOException {
         this(digester(), repository());
@@ -35,23 +31,4 @@ public class LambdaSoapStub extends AbstractLambdaSoapStub {
     LambdaSoapStub(Digester digester, StubbingRepository repository) {
         super(digester, repository);
     }
-
-    static Digester digester() throws TransformerConfigurationException, IOException {
-        // The AWS Lambda JAR is extracted into chroot, so we must use a standard file lookup to access JAR resources.
-        return new Digester(cleaner(new FileInputStream("remove-namespaces.xslt")), new MessageDigestFactory());
-    }
-
-    static Cleaner cleaner(InputStream stream) throws TransformerConfigurationException, IOException {
-        return new Cleaner(
-            new SoapMessages(new SoapMessageFactory()),
-            new TransformerFactory(
-                javax.xml.transform.TransformerFactory.newInstance().newTemplates(new StreamSource(stream))
-            )
-        );
-    }
-
-    static StubbingRepository repository() {
-        return new StubbingRepository(new Env(), AmazonS3ClientBuilder.defaultClient(), Clock.systemDefaultZone());
-    }
-
 }

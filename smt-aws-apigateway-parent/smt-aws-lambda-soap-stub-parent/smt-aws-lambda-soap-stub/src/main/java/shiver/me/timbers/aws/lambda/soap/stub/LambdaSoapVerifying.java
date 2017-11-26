@@ -16,19 +16,18 @@
 
 package shiver.me.timbers.aws.lambda.soap.stub;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import shiver.me.timbers.aws.apigateway.proxy.JsonProxyRequestHandler;
+
 import javax.xml.transform.TransformerConfigurationException;
 import java.io.IOException;
 
-import static shiver.me.timbers.aws.lambda.soap.stub.LambdaSoapStub.digester;
-import static shiver.me.timbers.aws.lambda.soap.stub.LambdaSoapStub.repository;
+import static shiver.me.timbers.aws.lambda.soap.stub.SoapStubSetup.digester;
+import static shiver.me.timbers.aws.lambda.soap.stub.SoapStubSetup.repository;
 
-public class LambdaSoapVerifying extends AbstractLambdaSoapVerifying {
+public class LambdaSoapVerifying extends JsonProxyRequestHandler<Verifying, String> {
 
-    public LambdaSoapVerifying() throws TransformerConfigurationException, IOException {
-        this(digester(), repository());
-    }
-
-    LambdaSoapVerifying(Digester digester, StubbingRepository repository) {
-        super(digester, repository);
+    public LambdaSoapVerifying() throws IOException, TransformerConfigurationException {
+        super(Verifying.class, new ObjectMapper(), new SoapVerifyingRequestHandler(digester(), repository()));
     }
 }

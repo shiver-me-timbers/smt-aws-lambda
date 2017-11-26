@@ -62,7 +62,6 @@ public class RequestVerifyingTest {
         final String request = someString();
         final Builder builder = mock(Builder.class);
         final Response response = mock(Response.class);
-        final VerifyFailure failure = mock(VerifyFailure.class);
         final String message = someString();
 
         // Given
@@ -70,8 +69,7 @@ public class RequestVerifyingTest {
         given(target.request(APPLICATION_JSON_TYPE)).willReturn(builder);
         given(builder.put(entity(new Verifying(request), APPLICATION_JSON_TYPE))).willReturn(response);
         given(response.getStatus()).willReturn(someIntegerBetween(400, 600));
-        given(response.readEntity(VerifyFailure.class)).willReturn(failure);
-        given(failure.getMessage()).willReturn(message);
+        given(response.readEntity(String.class)).willReturn(message);
 
         // When
         final Throwable actual = catchThrowable(() -> verifying.beCalled());

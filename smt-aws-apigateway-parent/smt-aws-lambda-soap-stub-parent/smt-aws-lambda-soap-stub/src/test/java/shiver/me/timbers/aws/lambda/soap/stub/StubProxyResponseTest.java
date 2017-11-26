@@ -16,48 +16,28 @@
 
 package shiver.me.timbers.aws.lambda.soap.stub;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
-import static nl.jqno.equalsverifier.Warning.NONFINAL_FIELDS;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static shiver.me.timbers.data.random.RandomStrings.someString;
 
-public class SoapWrapperTest {
+public class StubProxyResponseTest {
 
     @Test
-    public void Can_get_the_soap_body() {
+    public void Can_create_a_stub_proxy_response() {
 
         // Given
         final String expected = someString();
 
         // When
-        final String actual = new SoapWrapper(expected).getBody();
+        final StubProxyResponse actual = new StubProxyResponse(expected);
 
         // Then
-        assertThat(actual, is(expected));
-    }
-
-    @Test
-    public void Can_set_the_soap_body() {
-
-        final SoapWrapper request = new SoapWrapper();
-
-        final String expected = someString();
-
-        // Given
-        request.setBody(expected);
-
-        // When
-        final String actual = request.getBody();
-
-        // Then
-        assertThat(actual, is(expected));
-    }
-
-    @Test
-    public void Soap_wrapper_has_equality() {
-        EqualsVerifier.forClass(SoapWrapper.class).usingGetClass().suppress(NONFINAL_FIELDS).verify();
+        assertThat(actual.getStatusCode(), is(200));
+        assertThat(actual.getHeaders(), (Matcher) hasEntry("Content-Type", "text/xml"));
+        assertThat(actual.getBody(), is(expected));
     }
 }

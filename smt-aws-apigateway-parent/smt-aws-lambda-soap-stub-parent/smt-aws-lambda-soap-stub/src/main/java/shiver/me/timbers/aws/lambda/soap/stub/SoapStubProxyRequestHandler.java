@@ -17,25 +17,27 @@
 package shiver.me.timbers.aws.lambda.soap.stub;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.apache.log4j.Logger;
+import shiver.me.timbers.aws.apigateway.proxy.ProxyRequest;
+import shiver.me.timbers.aws.apigateway.proxy.ProxyRequestHandler;
+import shiver.me.timbers.aws.apigateway.proxy.ProxyResponse;
 
 import static java.lang.String.format;
 
-abstract class AbstractLambdaSoapStub implements RequestHandler<SoapWrapper, SoapWrapper> {
+class SoapStubProxyRequestHandler implements ProxyRequestHandler {
 
     private final Logger log = Logger.getLogger(getClass());
 
     private final Digester digester;
     private final StubbingRepository repository;
 
-    AbstractLambdaSoapStub(Digester digester, StubbingRepository repository) {
+    SoapStubProxyRequestHandler(Digester digester, StubbingRepository repository) {
         this.digester = digester;
         this.repository = repository;
     }
 
     @Override
-    public SoapWrapper handleRequest(SoapWrapper request, Context context) {
+    public ProxyResponse<String> handleRequest(ProxyRequest<String> request, Context context) {
         log.info("START: Soap studded response.");
         final String body = request.getBody();
         log.info(format("REQUEST:\n%s", body));
@@ -46,6 +48,6 @@ abstract class AbstractLambdaSoapStub implements RequestHandler<SoapWrapper, Soa
         repository.recordCall(hash, body);
         log.info(format("END: Returning response with hash (%s).", hash));
         log.info(format("RESPONSE:\n%s", response));
-        return new SoapWrapper(response);
+        return new StubProxyResponse(response);
     }
 }

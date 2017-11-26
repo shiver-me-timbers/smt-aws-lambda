@@ -17,31 +17,34 @@
 package shiver.me.timbers.aws.lambda.soap.stub;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.apache.log4j.Logger;
+import shiver.me.timbers.aws.apigateway.proxy.DeserialisedProxyRequestHandler;
+import shiver.me.timbers.aws.apigateway.proxy.ProxyRequest;
+import shiver.me.timbers.aws.apigateway.proxy.ProxyResponse;
 
 import static java.lang.String.format;
 
-abstract class AbstractLambdaSoapStubbing implements RequestHandler<Stubbing, String> {
+class SoapStubbingProxyRequestHandler implements DeserialisedProxyRequestHandler<Stubbing, String> {
 
     private final Logger log = Logger.getLogger(getClass());
 
     private final Digester digester;
     private final StubbingRepository repository;
 
-    AbstractLambdaSoapStubbing(Digester digester, StubbingRepository repository) {
+    SoapStubbingProxyRequestHandler(Digester digester, StubbingRepository repository) {
         this.digester = digester;
         this.repository = repository;
     }
 
     @Override
-    public String handleRequest(Stubbing stubbing, Context context) {
+    public ProxyResponse<String> handleRequest(ProxyRequest<Stubbing> request, Context context) {
         log.info("START: Setting up stub.");
+        final Stubbing stubbing = request.getBody();
         log.info(format("REQUEST:\n%s", stubbing.getRequest()));
         log.info(format("RESPONSE:\n%s", stubbing.getResponse()));
         final String hash = digester.digestSoapRequest(stubbing.getRequest());
         repository.save(hash, stubbing);
         log.info(format("END: Stub (%s) has been setup.", hash));
-        return format("SOAP stub saved with hash (%s).", hash);
+        return new StubbingProxyResponse(format("SOAP stub saved with hash (%s).", hash));
     }
 }

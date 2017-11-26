@@ -27,7 +27,7 @@ import java.nio.charset.Charset;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static shiver.me.timbers.aws.lambda.soap.stub.LambdaSoapStub.cleaner;
+import static shiver.me.timbers.aws.lambda.soap.stub.SoapStubSetup.cleaner;
 
 public class ITCleaner {
 

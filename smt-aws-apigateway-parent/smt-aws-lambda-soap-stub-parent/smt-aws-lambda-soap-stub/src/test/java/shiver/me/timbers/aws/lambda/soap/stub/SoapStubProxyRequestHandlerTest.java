@@ -20,6 +20,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.junit.Before;
 import org.junit.Test;
+import shiver.me.timbers.aws.apigateway.proxy.ProxyRequest;
+import shiver.me.timbers.aws.apigateway.proxy.ProxyResponse;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -28,23 +30,24 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static shiver.me.timbers.data.random.RandomStrings.someString;
 
-public class LambdaSoapStubTest {
+public class SoapStubProxyRequestHandlerTest {
 
     private Digester digester;
     private StubbingRepository repository;
-    private RequestHandler<SoapWrapper, SoapWrapper> soapStub;
+    private RequestHandler<ProxyRequest<String>, ProxyResponse<String>> soapStub;
 
     @Before
     public void setUp() {
         digester = mock(Digester.class);
         repository = mock(StubbingRepository.class);
-        soapStub = new LambdaSoapStub(digester, repository);
+        soapStub = new SoapStubProxyRequestHandler(digester, repository);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void Can_handle_a_soap_request() {
 
-        final SoapWrapper request = mock(SoapWrapper.class);
+        final ProxyRequest<String> request = mock(ProxyRequest.class);
 
         final String body = someString();
         final String hash = someString();
@@ -56,10 +59,10 @@ public class LambdaSoapStubTest {
         given(repository.findResponseByHash(hash)).willReturn(response);
 
         // When
-        final SoapWrapper actual = soapStub.handleRequest(request, mock(Context.class));
+        final ProxyResponse<String> actual = soapStub.handleRequest(request, mock(Context.class));
 
         // Then
         then(repository).should().recordCall(hash, body);
-        assertThat(actual, equalTo(new SoapWrapper(response)));
+        assertThat(actual, equalTo(new StubProxyResponse(response)));
     }
 }

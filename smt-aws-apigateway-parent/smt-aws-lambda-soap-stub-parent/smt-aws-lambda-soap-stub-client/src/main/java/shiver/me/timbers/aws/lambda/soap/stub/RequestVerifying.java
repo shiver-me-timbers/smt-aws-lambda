@@ -24,7 +24,7 @@ public class RequestVerifying {
             entity(new Verifying(soaps.toXmlString(requestMessage)), APPLICATION_JSON_TYPE)
         );
         if (response.getStatus() >= 400) {
-            throw new VerifyRequestError(response.readEntity(VerifyFailure.class).getMessage());
+            throw new VerifyRequestError(response.readEntity(String.class));
         }
     }
 }

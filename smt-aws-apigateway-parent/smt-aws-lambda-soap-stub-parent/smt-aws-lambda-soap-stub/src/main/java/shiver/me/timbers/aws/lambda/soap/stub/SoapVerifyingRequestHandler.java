@@ -17,41 +17,43 @@
 package shiver.me.timbers.aws.lambda.soap.stub;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.apache.log4j.Logger;
+import shiver.me.timbers.aws.apigateway.proxy.DeserialisedProxyRequestHandler;
+import shiver.me.timbers.aws.apigateway.proxy.ProxyRequest;
 
 import java.util.List;
 
 import static java.lang.String.format;
 
-abstract class AbstractLambdaSoapVerifying implements RequestHandler<Verifying, String> {
+class SoapVerifyingRequestHandler implements DeserialisedProxyRequestHandler<Verifying, String> {
 
     private final Logger log = Logger.getLogger(getClass());
 
     private final Digester digester;
     private final StubbingRepository repository;
 
-    AbstractLambdaSoapVerifying(Digester digester, StubbingRepository repository) {
+    SoapVerifyingRequestHandler(Digester digester, StubbingRepository repository) {
         this.digester = digester;
         this.repository = repository;
     }
 
     @Override
-    public String handleRequest(Verifying verifying, Context context) {
+    public StubbingProxyResponse handleRequest(ProxyRequest<Verifying> request, Context context) {
         log.info("START: Starting verification.");
+        final Verifying verifying = request.getBody();
         log.info(format("REQUEST:\n%s", verifying.getRequest()));
         final String hash = digester.digestSoapRequest(verifying.getRequest());
         final List<String> calls = repository.findCallsByHash(hash);
         if (calledMoreThanOnce(calls)) {
             log.info(format("END: Verify for (%s) has failed. Request called more than once.", hash));
-            throw new VerifyRequestError(format("Verify Failure. Request with hash (%s) called more than once.", hash));
+            return new StubbingProxyResponse(400, format("Verify Failure. Request with hash (%s) called more than once.", hash));
         }
         if (neverCalled(calls)) {
             log.info(format("END: Verify for (%s) has failed. Request never called.", hash));
-            throw new VerifyRequestError(format("Verify Failure. Request with hash (%s) was never called.", hash));
+            return new StubbingProxyResponse(400, format("Verify Failure. Request with hash (%s) was never called.", hash));
         }
         log.info(format("END: Verify for (%s) has succeeded.", hash));
-        return format("Verify Success. Request with hash (%s) only called once.", hash);
+        return new StubbingProxyResponse(format("Verify Success. Request with hash (%s) only called once.", hash));
     }
 
     private static boolean calledMoreThanOnce(List<String> calls) {
