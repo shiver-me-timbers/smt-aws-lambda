@@ -16,19 +16,27 @@
 
 package shiver.me.timbers.aws.common;
 
+import org.apache.log4j.Logger;
+
 import java.util.List;
 
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
 public class Env {
 
+    private final Logger log = Logger.getLogger(getClass());
+
     public String get(String name) {
-        return System.getenv(name);
+        final String variable = System.getenv(name);
+        log.info(format("Retrieved: %s=%s", name, variable));
+        return variable;
     }
 
     public List<String> getAsList(String name) {
         final String variable = System.getenv(name);
+        log.info(format("Retrieved: %s=%s", name, variable));
         if (variable == null) {
             return emptyList();
         }

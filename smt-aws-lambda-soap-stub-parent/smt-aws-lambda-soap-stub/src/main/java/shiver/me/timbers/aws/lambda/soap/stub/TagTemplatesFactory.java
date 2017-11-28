@@ -1,5 +1,6 @@
 package shiver.me.timbers.aws.lambda.soap.stub;
 
+import org.apache.log4j.Logger;
 import shiver.me.timbers.aws.common.IOStreams;
 
 import javax.xml.transform.Templates;
@@ -8,7 +9,11 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
+
 class TagTemplatesFactory {
+
+    private final Logger log = Logger.getLogger(getClass());
 
     private final List<String> tags;
     private final InputStream stream;
@@ -24,6 +29,7 @@ class TagTemplatesFactory {
 
     List<Templates> createAll() {
         try {
+            log.info(format("Ignoring tags: %s", tags));
             final String xslt = ioStreams.toString(stream);
             return tags.stream()
                 .map(tag -> xslt.replaceAll("\\{TAG_NAME}", tag))
