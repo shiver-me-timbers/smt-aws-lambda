@@ -60,7 +60,7 @@ public class PingableJsonRequestHandlerTest {
         // Given
         given(env.get("PING_STRING")).willReturn(pingString);
         given(ioStreams.buffer(input)).willReturn(bufferedInput);
-        given(ioStreams.readString(bufferedInput, 512)).willReturn(pingString + someString());
+        given(ioStreams.readBytesToString(bufferedInput, 512)).willReturn(pingString + someString());
 
         // When
         handler.handleRequest(input, output, context);
@@ -69,7 +69,7 @@ public class PingableJsonRequestHandlerTest {
         final InOrder order = inOrder(ioStreams, bufferedInput, requestHandler);
         order.verify(ioStreams).buffer(any(InputStream.class));
         order.verify(bufferedInput).mark(0);
-        order.verify(ioStreams).readString(any(InputStream.class), anyInt());
+        order.verify(ioStreams).readBytesToString(any(InputStream.class), anyInt());
         verifyZeroInteractions(requestHandler);
     }
 
@@ -88,7 +88,7 @@ public class PingableJsonRequestHandlerTest {
         // Given
         given(env.get("PING_STRING")).willReturn(pingString);
         given(ioStreams.buffer(input)).willReturn(bufferedInput);
-        given(ioStreams.readString(bufferedInput, 512)).willReturn(someString());
+        given(ioStreams.readBytesToString(bufferedInput, 512)).willReturn(someString());
         given(objectMapper.readValue(bufferedInput, TestInput.class)).willReturn(testInput);
         given(requestHandler.handleRequest(testInput, context)).willReturn(testOutput);
 
@@ -99,7 +99,7 @@ public class PingableJsonRequestHandlerTest {
         final InOrder order = inOrder(ioStreams, bufferedInput, objectMapper);
         order.verify(ioStreams).buffer(any(InputStream.class));
         order.verify(bufferedInput).mark(0);
-        order.verify(ioStreams).readString(any(InputStream.class), anyInt());
+        order.verify(ioStreams).readBytesToString(any(InputStream.class), anyInt());
         order.verify(bufferedInput).reset();
         order.verify(objectMapper).writeValue(output, testOutput);
     }

@@ -16,7 +16,8 @@
 
 package shiver.me.timbers.aws.lambda.soap.stub;
 
-import javax.xml.transform.TransformerConfigurationException;
+import shiver.me.timbers.aws.common.Env;
+
 import java.io.IOException;
 
 import static shiver.me.timbers.aws.lambda.soap.stub.SoapStubSetup.digester;
@@ -24,11 +25,15 @@ import static shiver.me.timbers.aws.lambda.soap.stub.SoapStubSetup.repository;
 
 public class LambdaSoapStub extends SoapStubProxyRequestHandler {
 
-    public LambdaSoapStub() throws TransformerConfigurationException, IOException {
-        this(digester(), repository());
+    public LambdaSoapStub() throws IOException {
+        this(new Env());
     }
 
-    LambdaSoapStub(Digester digester, StubbingRepository repository) {
+    private LambdaSoapStub(Env env) throws IOException {
+        this(digester(env), repository(env));
+    }
+
+    private LambdaSoapStub(Digester digester, StubbingRepository repository) {
         super(digester, repository);
     }
 }

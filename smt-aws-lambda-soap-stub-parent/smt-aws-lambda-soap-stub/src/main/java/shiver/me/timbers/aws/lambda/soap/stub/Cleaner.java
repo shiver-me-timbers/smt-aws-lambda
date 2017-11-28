@@ -28,6 +28,8 @@ import java.io.ByteArrayOutputStream;
 
 class Cleaner {
 
+    private static final String EXTRA_NEW_LINES = "\\n(?:\\s+\\n+)+";
+
     private final SoapMessages messages;
     private final TransformerFactory transformerFactory;
 
@@ -44,16 +46,24 @@ class Cleaner {
                 header.detachNode();
             }
             // Make sure to collapse any empty lines.
-            return messages.toXmlString(message).replaceAll("\\n\\s*\\n", "\n");
+            return messages.toXmlString(message).replaceAll(EXTRA_NEW_LINES, "\n");
         } catch (SOAPException e) {
             throw new SoapException("Failed to clean out the empty header.", e);
         }
     }
 
     String cleanNamespaces(String xml) {
+        return transform(xml, transformerFactory.createNameSpaceTransformer());
+    }
+
+    String cleanIgnoredTags(String xml) {
+        return transformerFactory.createTagTransformers().stream().reduce(xml, this::transform, (last, next) -> null)
+            .replaceAll(EXTRA_NEW_LINES, "\n");
+    }
+
+    private String transform(String xml, Transformer transformer) {
         try {
             final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            final Transformer transformer = transformerFactory.createTransformer();
             transformer.setOutputProperty("omit-xml-declaration", "yes");
             transformer.transform(
                 new StreamSource(new ByteArrayInputStream(xml.getBytes())),

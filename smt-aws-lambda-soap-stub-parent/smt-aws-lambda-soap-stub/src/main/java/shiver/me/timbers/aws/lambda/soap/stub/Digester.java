@@ -34,7 +34,7 @@ class Digester {
     }
 
     String digestSoapRequest(String soapRequestXml) {
-        final String xml = cleaner.cleanNamespaces(cleaner.cleanSOAPHeader(soapRequestXml));
+        final String xml = cleaner.cleanIgnoredTags(cleaner.cleanNamespaces(cleaner.cleanSOAPHeader(soapRequestXml)));
         log.info(format("Digesting XML:\n%s", xml));
         return toHex(factory.create("MD5").digest(xml.getBytes()));
     }

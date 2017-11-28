@@ -10,12 +10,15 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static shiver.me.timbers.data.random.RandomIntegers.someIntegerBetween;
 import static shiver.me.timbers.data.random.RandomStrings.someString;
 
@@ -71,9 +74,52 @@ public class IOStreamsTest {
         });
 
         // When
-        final String actual = ioStreams.readString(stream, byteNum);
+        final String actual = ioStreams.readBytesToString(stream, byteNum);
 
         // Then
         assertThat(actual, equalTo(expected));
+    }
+
+    @Test
+    public void Can_read_a_stream_into_a_string() throws IOException {
+
+        // Given
+        final String expected = someString();
+
+        // When
+        final String actual = ioStreams.toString(new ByteArrayInputStream(expected.getBytes()));
+
+        // Then
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void Can_fail_to_read_a_stream_into_a_string() throws IOException {
+
+        final InputStream stream = spy(new ByteArrayInputStream(someString().getBytes()));
+
+        final IOException exception = mock(IOException.class);
+
+        // Given
+        willThrow(exception).given(stream).close();
+
+        // When
+        final Throwable actual = catchThrowable(() -> ioStreams.toString(stream));
+
+        // Then
+        assertThat(actual, is(exception));
+    }
+
+    @Test
+    public void Can_convert_a_string_into_a_stream() throws IOException {
+
+        // Given
+        final String expected = someString();
+
+        // When
+        final InputStream actual = ioStreams.toStream(expected);
+
+        // Then
+        assertThat(IOUtils.toString(actual), is(expected));
     }
 }

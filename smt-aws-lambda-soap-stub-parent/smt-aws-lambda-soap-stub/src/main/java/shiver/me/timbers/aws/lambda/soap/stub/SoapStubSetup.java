@@ -18,31 +18,56 @@ package shiver.me.timbers.aws.lambda.soap.stub;
 
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import shiver.me.timbers.aws.common.Env;
+import shiver.me.timbers.aws.common.IOStreams;
 
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.stream.StreamSource;
 import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.time.Clock;
 
-public class SoapStubSetup {
+class SoapStubSetup {
 
-    static Digester digester() throws TransformerConfigurationException, IOException {
+    static Digester digester(Env env) throws FileNotFoundException {
         // The AWS Lambda JAR is extracted into chroot, so we must use a standard file lookup to access JAR resources.
-        return new Digester(cleaner(new FileInputStream("remove-namespaces.xslt")), new MessageDigestFactory());
+        return new Digester(
+            cleaner(
+                env,
+                new TemplatesFactory(),
+                new FileInputStream("remove-namespaces.xslt"),
+                new FileInputStream("remove-tag.xslt")
+            ),
+            new MessageDigestFactory()
+        );
     }
 
-    static Cleaner cleaner(InputStream stream) throws TransformerConfigurationException, IOException {
+    static Cleaner cleaner(
+        Env env,
+        TemplatesFactory templatesFactory,
+        InputStream namespaceXsltStream,
+        InputStream tagXsltStream
+    ) {
         return new Cleaner(
             new SoapMessages(new SoapMessageFactory()),
             new TransformerFactory(
-                javax.xml.transform.TransformerFactory.newInstance().newTemplates(new StreamSource(stream))
+                new NamespaceTemplatesFactory(
+                    templatesFactory,
+                    namespaceXsltStream
+                ),
+                new TagTemplatesFactory(
+                    env.getAsList("TAG_NAMES"),
+                    tagXsltStream,
+                    new IOStreams(),
+                    templatesFactory
+                )
             )
         );
     }
 
-    static StubbingRepository repository() {
-        return new StubbingRepository(new Env(), AmazonS3ClientBuilder.defaultClient(), Clock.systemDefaultZone());
+    static StubbingRepository repository(Env env) {
+        return new StubbingRepository(
+            env.get("S3_BUCKET_NAME"),
+            env.get("S3_DIRECTORY_NAME"),
+            AmazonS3ClientBuilder.defaultClient(), Clock.systemDefaultZone()
+        );
     }
 }

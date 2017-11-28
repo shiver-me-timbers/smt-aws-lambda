@@ -38,6 +38,6 @@ public class PingableRequestStreamHandler implements RequestStreamHandler {
     }
 
     private boolean isPingRequest(BufferedInputStream bufferedInput) throws IOException {
-        return ioStreams.readString(bufferedInput, 512).startsWith(env.get("PING_STRING"));
+        return ioStreams.readBytesToString(bufferedInput, 512).startsWith(env.get("PING_STRING"));
     }
 }

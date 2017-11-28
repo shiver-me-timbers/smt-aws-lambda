@@ -16,9 +16,22 @@
 
 package shiver.me.timbers.aws.common;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+
 public class Env {
 
     public String get(String name) {
         return System.getenv(name);
+    }
+
+    public List<String> getAsList(String name) {
+        final String variable = System.getenv(name);
+        if (variable == null) {
+            return emptyList();
+        }
+        return asList(variable.split(","));
     }
 }

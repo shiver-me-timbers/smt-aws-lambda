@@ -19,7 +19,6 @@ package shiver.me.timbers.aws.lambda.soap.stub;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.apache.log4j.Logger;
-import shiver.me.timbers.aws.common.Env;
 
 import java.time.Clock;
 import java.time.ZoneId;
@@ -42,9 +41,9 @@ class StubbingRepository {
     private final AmazonS3 s3;
     private final Clock clock;
 
-    StubbingRepository(Env env, AmazonS3 s3, Clock clock) {
-        this.bucketName = env.get("S3_BUCKET_NAME");
-        this.directory = env.get("S3_DIRECTORY_NAME");
+    StubbingRepository(String bucketName, String directory, AmazonS3 s3, Clock clock) {
+        this.bucketName = bucketName;
+        this.directory = directory;
         this.s3 = s3;
         this.clock = clock;
     }

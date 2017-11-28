@@ -19,16 +19,28 @@ package shiver.me.timbers.aws.lambda.soap.stub;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 class TransformerFactory {
 
-    private final Templates templates;
+    private final Templates namespaceTemplates;
+    private final List<Templates> tagTemplates;
 
-    TransformerFactory(Templates templates) {
-        this.templates = templates;
+    TransformerFactory(NamespaceTemplatesFactory namespaceTemplatesFactory, TagTemplatesFactory tagTemplatesFactory) {
+        namespaceTemplates = namespaceTemplatesFactory.create();
+        tagTemplates = tagTemplatesFactory.createAll();
     }
 
-    Transformer createTransformer() {
+    Transformer createNameSpaceTransformer() {
+        return newTransformer(namespaceTemplates);
+    }
+
+    List<Transformer> createTagTransformers() {
+        return tagTemplates.stream().map(this::newTransformer).collect(Collectors.toList());
+    }
+
+    private Transformer newTransformer(Templates templates) {
         try {
             return templates.newTransformer();
         } catch (TransformerConfigurationException e) {

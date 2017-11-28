@@ -48,6 +48,7 @@ public class DigesterTest {
         final String soapRequestXml = someString();
 
         final String headerCleaned = someString();
+        final String namespaceCleaned = someString();
         final String xml = someString();
         final MessageDigest digest = mock(MessageDigest.class);
 
@@ -55,7 +56,8 @@ public class DigesterTest {
 
         // Given
         given(cleaner.cleanSOAPHeader(soapRequestXml)).willReturn(headerCleaned);
-        given(cleaner.cleanNamespaces(headerCleaned)).willReturn(xml);
+        given(cleaner.cleanNamespaces(headerCleaned)).willReturn(namespaceCleaned);
+        given(cleaner.cleanIgnoredTags(namespaceCleaned)).willReturn(xml);
         given(factory.create("MD5")).willReturn(digest);
         given(digest.digest(xml.getBytes())).willReturn(expected);
 

@@ -21,7 +21,6 @@ import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.junit.Before;
 import org.junit.Test;
-import shiver.me.timbers.aws.common.Env;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -40,15 +39,19 @@ import static shiver.me.timbers.data.random.RandomStrings.someString;
 
 public class StubbingRepositoryTest {
 
-    private Env env;
     private AmazonS3 s3;
     private Clock clock;
+    private String bucketName;
+    private String directory;
+    private StubbingRepository repository;
 
     @Before
     public void setUp() {
-        env = mock(Env.class);
         s3 = mock(AmazonS3.class);
         clock = mock(Clock.class);
+        bucketName = someString();
+        directory = someString();
+        repository = new StubbingRepository(bucketName, directory, s3, clock);
     }
 
     @Test
@@ -57,19 +60,15 @@ public class StubbingRepositoryTest {
         final String hash = someString();
         final Stubbing stubbing = mock(Stubbing.class);
 
-        final String bucketName = someString();
-        final String directory = someString();
         final String request = someString();
         final String response = someString();
 
         // Given
-        given(env.get("S3_BUCKET_NAME")).willReturn(bucketName);
-        given(env.get("S3_DIRECTORY_NAME")).willReturn(directory);
         given(stubbing.getRequest()).willReturn(request);
         given(stubbing.getResponse()).willReturn(response);
 
         // When
-        new StubbingRepository(env, s3, clock).save(hash, stubbing);
+        repository.save(hash, stubbing);
 
         // Then
         then(s3).should().putObject(bucketName, format("%s/%s-request.xml", directory, hash), request);
@@ -79,19 +78,15 @@ public class StubbingRepositoryTest {
     @Test
     public void Can_find_a_stubbed_response_by_a_hash() {
 
-        final String directory = someString();
         final String hash = someString();
 
-        final String bucketName = someString();
         final String expected = someString();
 
         // Given
-        given(env.get("S3_BUCKET_NAME")).willReturn(bucketName);
-        given(env.get("S3_DIRECTORY_NAME")).willReturn(directory);
         given(s3.getObjectAsString(bucketName, format("%s/%s-response.xml", directory, hash))).willReturn(expected);
 
         // When
-        final String actual = new StubbingRepository(env, s3, clock).findResponseByHash(hash);
+        final String actual = repository.findResponseByHash(hash);
 
         // Then
         assertThat(actual, is(expected));
@@ -100,10 +95,8 @@ public class StubbingRepositoryTest {
     @Test
     public void Can_find_a_call_to_a_stub() {
 
-        final String directory = someString();
         final String hash = someString();
 
-        final String bucketName = someString();
         final ObjectListing objects = mock(ObjectListing.class);
         final S3ObjectSummary summary1 = mock(S3ObjectSummary.class);
         final S3ObjectSummary summary2 = mock(S3ObjectSummary.class);
@@ -113,8 +106,6 @@ public class StubbingRepositoryTest {
         final String call3 = someString();
 
         // Given
-        given(env.get("S3_BUCKET_NAME")).willReturn(bucketName);
-        given(env.get("S3_DIRECTORY_NAME")).willReturn(directory);
         given(s3.listObjects(bucketName, format("%s/%s-called-", directory, hash))).willReturn(objects);
         given(objects.getObjectSummaries()).willReturn(asList(summary1, summary2, summary3));
         given(summary1.getKey()).willReturn(call1);
@@ -122,7 +113,7 @@ public class StubbingRepositoryTest {
         given(summary3.getKey()).willReturn(call3);
 
         // When
-        final List<String> actual = new StubbingRepository(env, s3, clock).findCallsByHash(hash);
+        final List<String> actual = repository.findCallsByHash(hash);
 
         // Then
         assertThat(actual, contains(call1, call2, call3));
@@ -134,17 +125,13 @@ public class StubbingRepositoryTest {
         final String hash = someString();
         final String body = someString();
 
-        final String bucketName = someString();
-        final String directory = someString();
         final Instant now = Instant.now();
 
         // Given
-        given(env.get("S3_BUCKET_NAME")).willReturn(bucketName);
-        given(env.get("S3_DIRECTORY_NAME")).willReturn(directory);
         given(clock.instant()).willReturn(now);
 
         // When
-        new StubbingRepository(env, s3, clock).recordCall(hash, body);
+        repository.recordCall(hash, body);
 
         // Then
         then(s3).should()
