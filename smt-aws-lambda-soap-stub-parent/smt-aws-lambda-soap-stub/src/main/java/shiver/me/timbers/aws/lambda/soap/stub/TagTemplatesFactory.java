@@ -31,7 +31,7 @@ class TagTemplatesFactory {
                 .map(templatesFactory::create)
                 .collect(Collectors.toList());
         } catch (IOException e) {
-            throw new UnsupportedOperationException();
+            throw new XsltTemplateException("Failed to create the XSLT template.", e);
         }
     }
 }

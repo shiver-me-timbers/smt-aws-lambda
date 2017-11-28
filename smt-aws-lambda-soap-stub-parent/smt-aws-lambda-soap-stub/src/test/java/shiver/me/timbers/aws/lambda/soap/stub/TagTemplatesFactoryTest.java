@@ -12,6 +12,8 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -83,6 +85,8 @@ public class TagTemplatesFactoryTest {
         final Throwable actual = catchThrowable(() -> factory.createAll());
 
         // Then
-        assertThat(actual, is(exception));
+        assertThat(actual, instanceOf(XsltTemplateException.class));
+        assertThat(actual.getMessage(), equalTo("Failed to create the XSLT template."));
+        assertThat(actual.getCause(), is(exception));
     }
 }
