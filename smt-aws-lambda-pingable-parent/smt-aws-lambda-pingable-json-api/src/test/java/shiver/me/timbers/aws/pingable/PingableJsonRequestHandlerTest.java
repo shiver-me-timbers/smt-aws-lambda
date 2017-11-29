@@ -29,7 +29,7 @@ public class PingableJsonRequestHandlerTest {
     private IOStreams ioStreams;
     private ObjectMapper objectMapper;
     private RequestHandler<TestInput, TestOutput> requestHandler;
-    private PingableJsonRequestHandler handler;
+    private Runnable runnable;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -38,7 +38,16 @@ public class PingableJsonRequestHandlerTest {
         ioStreams = mock(IOStreams.class);
         requestHandler = mock(RequestHandler.class);
         objectMapper = mock(ObjectMapper.class);
-        handler = new PingableJsonRequestHandler(env, ioStreams, TestInput.class, objectMapper, requestHandler);
+        runnable = mock(Runnable.class);
+    }
+
+    private PingableJsonRequestHandler handler() {
+        return new PingableJsonRequestHandler(env, ioStreams, TestInput.class, objectMapper, requestHandler) {
+            @Override
+            public void ping() {
+                runnable.run();
+            }
+        };
     }
 
     @Test
@@ -63,13 +72,14 @@ public class PingableJsonRequestHandlerTest {
         given(ioStreams.readBytesToString(bufferedInput, 512)).willReturn(pingString + someString());
 
         // When
-        handler.handleRequest(input, output, context);
+        handler().handleRequest(input, output, context);
 
         // Then
-        final InOrder order = inOrder(ioStreams, bufferedInput, requestHandler);
+        final InOrder order = inOrder(ioStreams, bufferedInput, runnable, requestHandler);
         order.verify(ioStreams).buffer(any(InputStream.class));
         order.verify(bufferedInput).mark(0);
         order.verify(ioStreams).readBytesToString(any(InputStream.class), anyInt());
+        order.verify(runnable).run();
         verifyZeroInteractions(requestHandler);
     }
 
@@ -93,7 +103,7 @@ public class PingableJsonRequestHandlerTest {
         given(requestHandler.handleRequest(testInput, context)).willReturn(testOutput);
 
         // When
-        handler.handleRequest(input, output, context);
+        handler().handleRequest(input, output, context);
 
         // Then
         final InOrder order = inOrder(ioStreams, bufferedInput, objectMapper);
@@ -102,6 +112,7 @@ public class PingableJsonRequestHandlerTest {
         order.verify(ioStreams).readBytesToString(any(InputStream.class), anyInt());
         order.verify(bufferedInput).reset();
         order.verify(objectMapper).writeValue(output, testOutput);
+        verifyZeroInteractions(runnable);
     }
 
     private interface TestInput {

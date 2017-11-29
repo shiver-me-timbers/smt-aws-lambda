@@ -18,20 +18,31 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static shiver.me.timbers.data.random.RandomStrings.someString;
 
 public class ITPingableRequestStreamHandler {
 
     private Env env;
     private EchoRequestStreamHandler streamHandler;
-    private PingableRequestStreamHandler handler;
+    private Runnable runnable;
 
     @Before
     public void setUp() {
         env = mock(Env.class);
         streamHandler = new EchoRequestStreamHandler();
-        handler = new PingableRequestStreamHandler(env, new IOStreams(), streamHandler);
+        runnable = mock(Runnable.class);
+    }
+
+    private PingableRequestStreamHandler handler() {
+        return new PingableRequestStreamHandler(env, new IOStreams(), streamHandler) {
+            @Override
+            public void ping() {
+                runnable.run();
+            }
+        };
     }
 
     @Test
@@ -45,9 +56,10 @@ public class ITPingableRequestStreamHandler {
         given(env.get("PING_STRING")).willReturn(pingString);
 
         // When
-        handler.handleRequest(new ByteArrayInputStream(input.getBytes()), output, mock(Context.class));
+        handler().handleRequest(new ByteArrayInputStream(input.getBytes()), output, mock(Context.class));
 
         // Then
+        then(runnable).should().run();
         assertThat(output.toString(), isEmptyString());
     }
 
@@ -62,9 +74,10 @@ public class ITPingableRequestStreamHandler {
         given(env.get("PING_STRING")).willReturn(pingString);
 
         // When
-        handler.handleRequest(new ByteArrayInputStream(input.getBytes()), output, mock(Context.class));
+        handler().handleRequest(new ByteArrayInputStream(input.getBytes()), output, mock(Context.class));
 
         // Then
+        verifyZeroInteractions(runnable);
         assertThat(output.toString(), equalTo(input));
     }
 

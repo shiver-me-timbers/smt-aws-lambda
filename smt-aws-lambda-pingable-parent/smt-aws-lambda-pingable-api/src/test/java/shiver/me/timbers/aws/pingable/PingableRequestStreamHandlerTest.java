@@ -27,14 +27,23 @@ public class PingableRequestStreamHandlerTest {
     private Env env;
     private IOStreams ioStreams;
     private RequestStreamHandler streamHandler;
-    private PingableRequestStreamHandler handler;
+    private Runnable runnable;
 
     @Before
     public void setUp() {
         env = mock(Env.class);
         ioStreams = mock(IOStreams.class);
         streamHandler = mock(RequestStreamHandler.class);
-        handler = new PingableRequestStreamHandler(env, ioStreams, streamHandler);
+        runnable = mock(Runnable.class);
+    }
+
+    private PingableRequestStreamHandler handler() {
+        return new PingableRequestStreamHandler(env, ioStreams, streamHandler) {
+            @Override
+            public void ping() {
+                runnable.run();
+            }
+        };
     }
 
     @Test
@@ -58,13 +67,14 @@ public class PingableRequestStreamHandlerTest {
         given(ioStreams.readBytesToString(bufferedInput, 512)).willReturn(pingString + someString());
 
         // When
-        handler.handleRequest(input, output, context);
+        handler().handleRequest(input, output, context);
 
         // Then
-        final InOrder order = inOrder(ioStreams, bufferedInput, streamHandler);
+        final InOrder order = inOrder(ioStreams, bufferedInput, runnable, streamHandler);
         order.verify(ioStreams).buffer(any(InputStream.class));
         order.verify(bufferedInput).mark(0);
         order.verify(ioStreams).readBytesToString(any(InputStream.class), anyInt());
+        order.verify(runnable).run();
         verifyZeroInteractions(streamHandler);
     }
 
@@ -84,14 +94,15 @@ public class PingableRequestStreamHandlerTest {
         given(ioStreams.readBytesToString(bufferedInput, 512)).willReturn(someString());
 
         // When
-        handler.handleRequest(input, output, context);
+        handler().handleRequest(input, output, context);
 
         // Then
-        final InOrder order = inOrder(ioStreams, bufferedInput, streamHandler);
+        final InOrder order = inOrder(ioStreams, bufferedInput, runnable, streamHandler);
         order.verify(ioStreams).buffer(any(InputStream.class));
         order.verify(bufferedInput).mark(0);
         order.verify(ioStreams).readBytesToString(any(InputStream.class), anyInt());
         order.verify(bufferedInput).reset();
         order.verify(streamHandler).handleRequest(bufferedInput, output, context);
+        verifyZeroInteractions(runnable);
     }
 }
