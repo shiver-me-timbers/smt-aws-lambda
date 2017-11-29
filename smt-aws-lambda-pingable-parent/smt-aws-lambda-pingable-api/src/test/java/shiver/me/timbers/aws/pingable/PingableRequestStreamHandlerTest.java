@@ -105,4 +105,10 @@ public class PingableRequestStreamHandlerTest {
         order.verify(streamHandler).handleRequest(bufferedInput, output, context);
         verifyZeroInteractions(runnable);
     }
+
+    @Test
+    public void Direct_call_for_coverage() {
+        final Pingable pingable = new PingableRequestStreamHandler(mock(RequestStreamHandler.class));
+        pingable.ping();
+    }
 }

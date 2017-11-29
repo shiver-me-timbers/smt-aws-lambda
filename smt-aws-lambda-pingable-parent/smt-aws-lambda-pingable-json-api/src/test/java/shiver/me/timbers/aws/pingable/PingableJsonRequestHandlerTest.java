@@ -115,6 +115,13 @@ public class PingableJsonRequestHandlerTest {
         verifyZeroInteractions(runnable);
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void Direct_call_for_coverage() {
+        final Pingable pingable = new PingableJsonRequestHandler(Object.class, mock(RequestHandler.class));
+        pingable.ping();
+    }
+
     private interface TestInput {
     }
 
